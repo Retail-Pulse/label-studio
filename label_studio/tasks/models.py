@@ -142,11 +142,13 @@ class Task(models.Model):
             return storage_link.storage
 
         # or try global storage settings (only s3 for now)
-        elif get_env('USE_DEFAULT_STORAGE', default=False, is_bool=True):
+        # negated it as a hack,
+        elif ~get_env('get_env', default=False, is_bool=True):
+            logger.info("got the value")
             # TODO: this is used to access global environment storage settings.
             # We may use more than one and non-default S3 storage (like GCS, Azure)
-            from io_storages.s3.models import S3ImportStorage
-            return S3ImportStorage()
+            from io_storages.gcs.models import GCSImportStorage
+            return GCSImportStorage()
 
     def update_is_labeled(self):
         """Set is_labeled field according to annotations*.count > overlap
